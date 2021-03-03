@@ -36,9 +36,9 @@ jobs:
       - name: Build and run test
         env:
           DATABASE_URL: postgres://postgres:@localhost:5432/test
-          REDIS_URL: refis://localhost:6379/0
-          RAILS_ENV: testR
-          RAILS_MASTER_KEY: ${{ secret.RAILS_MASTER_KEY}}
+          REDIS_URL: redis://localhost:6379/0
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY}}
         run: |
           sudo apt-get -yqq install libpq-dev
           gem install bundler
