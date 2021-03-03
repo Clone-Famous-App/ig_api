@@ -17,21 +17,38 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby-version: ['3.0']
+    services:
+      db:
+        image: postgres:11
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        redis:
+          image: redis
+          ports: ['6379:6379']
+          options: --entrypoint redis-server
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-    # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-    # change this to (see https://github.com/ruby/setup-ruby#versioning):
-    # uses: ruby/setup-ruby@v1
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Run tests
-      run: |
-        bundle lock --add-platform x86_64-linux
-        bundle exec rake
+      steps:
+        - uses: actions/checkout@v1
+        - name: Setup Ruby
+          uses: actions/setup-ruby@v1
+          with:
+            ruby-version: 3.0.x
+        - uses: borales/actions-yarn@v2.0.0
+          with:
+            cmd: install
+        - name: Build and run test
+          env:
+            DATABASE_URL: postgres://postgres:@localhost:5432/test
+            REDIS_URL: refis://localhost:6379/0
+            RAILS_ENV: testR
+            RAILS_MASTER_KEY: ${{ secret.RAILS_MASTER_KEY}}
+          run: |
+            sudo apt-get -yqq install libpq-dev
+            gem install bundler
+            bundle install --jobs 4 --retry 3
+            bundle exec rails db:prepare
+            bundle exel rails test
