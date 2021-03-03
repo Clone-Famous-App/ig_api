@@ -26,6 +26,7 @@ jobs:
         working-directory: backend/ruby
         env:
           DATABASE_URL: postgres://postgres:@localhost:5432/test
+          POSTGRES_PASSWORD: postgres
           RAILS_ENV: test
         run: |
           gem install bundler
