@@ -1,5 +1,11 @@
 class PostsController < ApplicationController
-    before_action :authorized
+    before_action :authorized, only: [:create]
+
+    def show
+        @posts = Post.all
+        byebug
+        render json: {data: @post}, status: :ok
+    end
 
     def create
         @post = Post.create(post_param)
@@ -11,6 +17,7 @@ class PostsController < ApplicationController
         end
     end
 
+    
 
     private
 
