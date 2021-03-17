@@ -1,6 +1,6 @@
 # Intagram Clone API
 
-The purpose of this repository is just for learning new stuf hopefully there something we can learn as software engineer.
+The purpose of this repository is just for learning new stuff, so hopefully there something we can learn together.
 
 ## Database Diagram
 
